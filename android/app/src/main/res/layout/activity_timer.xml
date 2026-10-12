@@ -10,8 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/primary"
-        android:theme="@style/ThemeOverlay.Material3.Dark"
-        app:title="Workout Timer" />
+        app:title="Workout Timer"
+        app:titleTextColor="@color/white"
+        app:navigationIconTint="@color/white" />
 
     <ScrollView
         android:layout_width="match_parent"
