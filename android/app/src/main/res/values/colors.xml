@@ -1,0 +1,9 @@
+<resources>
+    <color name="primary">#10B981</color>
+    <color name="primaryDark">#0E7F63</color>
+    <color name="coin">#F5B301</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF101418</color>
+    <color name="muted">#FF6B7280</color>
+    <color name="track">#FFE3E8EE</color>
+</resources>
