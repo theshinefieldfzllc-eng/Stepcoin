@@ -26,7 +26,16 @@ jobs:
         working-directory: android
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon --stacktrace
+          set +e
+          ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee /tmp/build.log
+          code=${PIPESTATUS[0]}
+          if [ "$code" -ne 0 ]; then
+            echo "Extracting error lines as annotations..."
+            grep -iE "^e: |FAILURE:|What went wrong|AAPT|error:|Unresolved|Caused by:|> Task .*FAILED|Execution failed|could not|not found" /tmp/build.log \
+              | grep -v "Deprecated" | head -n 30 \
+              | while IFS= read -r line; do echo "::error::${line}"; done
+          fi
+          exit "$code"
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
