@@ -24,14 +24,14 @@
                 android:orientation="horizontal"
                 android:gravity="center_vertical">
 
-                <TextView
+                <ImageView
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="46dp"
                     android:layout_weight="1"
-                    android:text="StepCoin"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/primary" />
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitStart"
+                    android:src="@drawable/logo"
+                    android:contentDescription="StepCoin" />
 
                 <ImageView
                     android:layout_width="26dp"
@@ -150,6 +150,27 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="🎁  Claim Daily Reward  +25" />
+
+            <Button
+                android:id="@+id/workoutsBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="🏋️  Workouts (Exercise Library)" />
+
+            <Button
+                android:id="@+id/timerBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="⏱️  Workout Timer" />
+
+            <Button
+                android:id="@+id/bmiBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="🧮  BMI Calculator" />
 
             <TextView
                 android:layout_width="match_parent"

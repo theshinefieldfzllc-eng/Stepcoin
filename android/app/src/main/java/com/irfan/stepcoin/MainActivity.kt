@@ -1,6 +1,7 @@
 package com.irfan.stepcoin
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -67,6 +68,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
         findViewById<Button>(R.id.watchBtn).setOnClickListener { showRewarded() }
         findViewById<Button>(R.id.dailyBtn).setOnClickListener { claimDaily() }
+        findViewById<Button>(R.id.workoutsBtn).setOnClickListener { startActivity(Intent(this, ExercisesActivity::class.java)) }
+        findViewById<Button>(R.id.timerBtn).setOnClickListener { startActivity(Intent(this, TimerActivity::class.java)) }
+        findViewById<Button>(R.id.bmiBtn).setOnClickListener { startActivity(Intent(this, BmiActivity::class.java)) }
 
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager
         stepSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
