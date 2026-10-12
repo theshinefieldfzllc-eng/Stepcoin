@@ -9,6 +9,7 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -47,6 +48,11 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private lateinit var distTv: TextView
     private lateinit var calTv: TextView
     private lateinit var ring: CircularProgressIndicator
+    private lateinit var adView: AdView
+    private lateinit var goProBtn: Button
+    private lateinit var proBadge: TextView
+
+    private var billing: BillingManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,12 +65,29 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         distTv = findViewById(R.id.distTv)
         calTv = findViewById(R.id.calTv)
         ring = findViewById(R.id.ring)
+        adView = findViewById(R.id.adView)
+        goProBtn = findViewById(R.id.goProBtn)
+        proBadge = findViewById(R.id.proBadge)
         ring.max = GOAL
         goalTv.text = "Goal ${fmt(GOAL)}"
 
         MobileAds.initialize(this) {}
-        findViewById<AdView>(R.id.adView).loadAd(AdRequest.Builder().build())
+        if (!isPro()) {
+            adView.loadAd(AdRequest.Builder().build())
+        }
         loadRewarded()
+
+        // ---- Pro / billing ----
+        billing = BillingManager(this) { runOnUiThread { applyProState() } }
+        billing?.start()
+        goProBtn.setOnClickListener {
+            if (isPro()) {
+                toast("You already have Pro. Thank you! 🙏")
+                return@setOnClickListener
+            }
+            val started = billing?.launchPurchase(this) ?: false
+            if (!started) toast("Pro is still loading or not available yet. Please try again in a moment.")
+        }
 
         findViewById<Button>(R.id.watchBtn).setOnClickListener { showRewarded() }
         findViewById<Button>(R.id.dailyBtn).setOnClickListener { claimDaily() }
@@ -77,6 +100,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
         checkDayRollover()
         ensureActivityPermission()
+        applyProState()
         updateUI()
     }
 
@@ -86,12 +110,39 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         if (hasActivityPermission()) {
             stepSensor?.let { sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_UI) }
         }
+        billing?.restorePurchases()
+        applyProState()
         updateUI()
     }
 
     override fun onPause() {
         super.onPause()
         sensorManager.unregisterListener(this)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        billing?.end()
+    }
+
+    // ---------------- Pro ----------------
+    private fun isPro(): Boolean = Prefs.getBool(this, "pro", false)
+
+    private fun applyProState() {
+        if (isPro()) {
+            adView.visibility = View.GONE
+            proBadge.visibility = View.VISIBLE
+            goProBtn.text = "⭐ PRO active — no ads · 2× coins"
+            goProBtn.isEnabled = false
+        } else {
+            proBadge.visibility = View.GONE
+            goProBtn.isEnabled = true
+            val price = billing?.formattedPrice
+            goProBtn.text = if (price != null)
+                "⭐ Go Pro — Remove Ads + 2× Coins  ($price)"
+            else
+                "⭐ Go Pro — Remove Ads + 2× Coins"
+        }
     }
 
     // ---------------- Steps ----------------
@@ -116,7 +167,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
 
     private fun awardStepCoins(steps: Int) {
-        // 10 coins per 1,000 steps
+        // 10 coins per 1,000 steps (doubled for Pro via addCoins)
         val milestone = steps / 1000
         val claimed = Prefs.getInt(this, "milestones", 0)
         if (milestone > claimed) {
@@ -139,14 +190,15 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     // ---------------- Coins / rewards ----------------
     private fun addCoins(n: Int) {
-        Prefs.setInt(this, "coins", Prefs.getInt(this, "coins", 0) + n)
+        val mult = if (isPro()) 2 else 1
+        Prefs.setInt(this, "coins", Prefs.getInt(this, "coins", 0) + n * mult)
         updateUI()
     }
 
     private fun claimDaily() {
         val today = dateStr(0)
         if (Prefs.getStr(this, "dailyClaim", "") == today) {
-            toast("Aaj ka daily reward le liya. Kal phir aayein 😊")
+            toast("Daily reward already claimed. Come back tomorrow 😊")
             return
         }
         Prefs.setStr(this, "dailyClaim", today)
@@ -166,7 +218,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private fun showRewarded() {
         val ad = rewardedAd
         if (ad == null) {
-            toast("Ad tayyar nahi — thodi der me phir try karein.")
+            toast("Ad not ready — please try again shortly.")
             loadRewarded()
             return
         }

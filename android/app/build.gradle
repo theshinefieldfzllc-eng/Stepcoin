@@ -5,20 +5,36 @@ plugins {
 
 android {
     namespace 'com.irfan.stepcoin'
-    compileSdk 34
+    compileSdk 36
 
     defaultConfig {
         applicationId "com.irfan.stepcoin"
         minSdk 24
-        targetSdk 34
+        targetSdk 36
         versionCode 1
         versionName "1.0"
+    }
+
+    signingConfigs {
+        release {
+            // Values come from GitHub Actions secrets (see release workflow).
+            // When they are not set (e.g. local/debug builds) this stays empty,
+            // which is fine because only release builds use it.
+            def ksPath = System.getenv("KEYSTORE_FILE")
+            if (ksPath != null && !ksPath.isEmpty()) {
+                storeFile file(ksPath)
+                storePassword System.getenv("KEYSTORE_PASSWORD")
+                keyAlias System.getenv("KEY_ALIAS")
+                keyPassword System.getenv("KEY_PASSWORD")
+            }
+        }
     }
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 
@@ -36,4 +52,5 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'com.google.android.gms:play-services-ads:23.6.0'
+    implementation 'com.android.billingclient:billing:9.1.0'
 }

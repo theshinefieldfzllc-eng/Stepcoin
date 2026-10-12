@@ -1,48 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp">
+    android:orientation="vertical">
 
-    <TextView
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="🧮 BMI Calculator"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:textColor="@color/primary"
-        android:layout_marginBottom="24dp" />
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/primary"
+        android:theme="@style/ThemeOverlay.Material3.Dark"
+        app:title="BMI Calculator" />
 
-    <EditText
-        android:id="@+id/height"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Height (cm)"
-        android:inputType="numberDecimal"
-        android:layout_marginBottom="12dp" />
+        android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/weight"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Weight (kg)"
-        android:inputType="numberDecimal"
-        android:layout_marginBottom="20dp" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
 
-    <Button
-        android:id="@+id/calcBtn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Calculate BMI" />
+            <!-- Height -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Height"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="6dp" />
 
-    <TextView
-        android:id="@+id/result"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:layout_marginTop="28dp" />
+            <RadioGroup
+                android:id="@+id/heightUnit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="6dp">
+                <RadioButton
+                    android:id="@+id/rbCm"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="cm"
+                    android:checked="true" />
+                <RadioButton
+                    android:id="@+id/rbFtIn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:text="ft / in" />
+            </RadioGroup>
+
+            <EditText
+                android:id="@+id/heightCm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Height (cm)"
+                android:inputType="numberDecimal"
+                android:layout_marginBottom="16dp" />
+
+            <LinearLayout
+                android:id="@+id/ftinRow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:layout_marginBottom="16dp">
+                <EditText
+                    android:id="@+id/feet"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Feet"
+                    android:inputType="number"
+                    android:layout_marginEnd="8dp" />
+                <EditText
+                    android:id="@+id/inch"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="Inches"
+                    android:inputType="numberDecimal" />
+            </LinearLayout>
+
+            <!-- Weight -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Weight"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_marginBottom="6dp" />
+
+            <RadioGroup
+                android:id="@+id/weightUnit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="6dp">
+                <RadioButton
+                    android:id="@+id/rbKg"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="kg"
+                    android:checked="true" />
+                <RadioButton
+                    android:id="@+id/rbLb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:text="lb" />
+            </RadioGroup>
+
+            <EditText
+                android:id="@+id/weightInput"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Weight (kg)"
+                android:inputType="numberDecimal"
+                android:layout_marginBottom="24dp" />
+
+            <Button
+                android:id="@+id/calcBtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Calculate BMI" />
+
+            <TextView
+                android:id="@+id/result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginTop="28dp" />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>

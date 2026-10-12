@@ -8,12 +8,16 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.google.android.material.appbar.MaterialToolbar
 
 class ExercisesActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_exercises)
+
+        setSupportActionBar(findViewById<MaterialToolbar>(R.id.toolbar))
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val container = findViewById<LinearLayout>(R.id.container)
         val d = resources.displayMetrics.density
@@ -57,5 +61,10 @@ class ExercisesActivity : AppCompatActivity() {
             .setMessage("Target: ${ex.muscle}\n\nHow to do it:\n${ex.how}\n\nSuggested: ${ex.sets}")
             .setPositiveButton("Got it", null)
             .show()
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        finish()
+        return true
     }
 }
