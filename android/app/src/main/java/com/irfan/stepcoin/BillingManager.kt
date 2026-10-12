@@ -87,9 +87,10 @@ class BillingManager(
     fun launchPurchase(activity: Activity): Boolean {
         val pd = productDetails ?: return false
         val offer = pd.oneTimePurchaseOfferDetailsList?.firstOrNull() ?: return false
+        val token = offer.offerToken ?: return false
         val pdParams = BillingFlowParams.ProductDetailsParams.newBuilder()
             .setProductDetails(pd)
-            .setOfferToken(offer.offerToken)
+            .setOfferToken(token)
             .build()
         val flowParams = BillingFlowParams.newBuilder()
             .setProductDetailsParamsList(listOf(pdParams))
